@@ -16,7 +16,8 @@ import {
   Eye,
   Layout,
   Globe,
-  ShoppingCart
+  ShoppingCart,
+  MapPin
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -217,6 +218,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className="w-full border-gray-200 border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="Short description for the footer..."
                   />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs text-gray-400 font-medium">Physical Address</span>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-3.5 text-gray-400" size={16} />
+                    <input 
+                      type="text" 
+                      value={config.address || ''} 
+                      onChange={(e) => onUpdateConfig({...config, address: e.target.value})}
+                      className="w-full border-gray-200 border rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                      placeholder="e.g., Gangnam-gu, Seoul, Korea"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-xs text-gray-400 font-medium">Copyright Text</span>

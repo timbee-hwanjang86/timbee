@@ -20,6 +20,7 @@ export interface SiteConfig {
   footerAbout: string;
   footerCopyright: string;
   amazonUrl: string;
+  address: string;
 }
 
 export type View = 'home' | 'products' | 'admin' | 'about';
