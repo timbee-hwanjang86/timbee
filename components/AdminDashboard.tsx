@@ -18,7 +18,10 @@ import {
   Globe,
   ShoppingCart,
   MapPin,
-  LogOut
+  LogOut,
+  Database,
+  Copy,
+  Check
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -38,7 +41,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onClose,
   onLogout
 }) => {
-  const [activeTab, setActiveTab] = useState<'products' | 'general' | 'footer'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'general' | 'footer' | 'data'>('products');
+  const [copied, setCopied] = useState(false);
 
   // Product Edit Form State
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -74,6 +78,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
   };
 
+  const generateConstantsCode = () => {
+    return `import { Product, SiteConfig } from './types';
+
+export const INITIAL_PRODUCTS: Product[] = ${JSON.stringify(products, null, 2)};
+
+export const INITIAL_CONFIG: SiteConfig = ${JSON.stringify(config, null, 2)};
+
+export const ADMIN_SECRET_CODE = 'timbee2025';`;
+  };
+
+  const handleCopyCode = () => {
+    const code = generateConstantsCode();
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-white overflow-y-auto selection:bg-blue-100">
       <div className="max-w-6xl mx-auto px-4 py-12">
@@ -92,24 +113,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
         </header>
 
-        <div className="flex gap-2 mb-10 bg-gray-100 p-1.5 rounded-xl max-w-lg">
+        <div className="flex gap-2 mb-10 bg-gray-100 p-1.5 rounded-xl max-w-2xl overflow-x-auto">
           <button 
             onClick={() => setActiveTab('products')}
-            className={`flex-1 py-2.5 flex items-center justify-center gap-2 rounded-lg font-semibold text-sm transition-all ${activeTab === 'products' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`flex-1 py-2.5 px-4 flex items-center justify-center gap-2 rounded-lg font-semibold text-xs whitespace-nowrap transition-all ${activeTab === 'products' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            <Package size={18} /> Products
+            <Package size={16} /> Products
           </button>
           <button 
             onClick={() => setActiveTab('general')}
-            className={`flex-1 py-2.5 flex items-center justify-center gap-2 rounded-lg font-semibold text-sm transition-all ${activeTab === 'general' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`flex-1 py-2.5 px-4 flex items-center justify-center gap-2 rounded-lg font-semibold text-xs whitespace-nowrap transition-all ${activeTab === 'general' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            <Settings size={18} /> General
+            <Settings size={16} /> General
           </button>
           <button 
             onClick={() => setActiveTab('footer')}
-            className={`flex-1 py-2.5 flex items-center justify-center gap-2 rounded-lg font-semibold text-sm transition-all ${activeTab === 'footer' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`flex-1 py-2.5 px-4 flex items-center justify-center gap-2 rounded-lg font-semibold text-xs whitespace-nowrap transition-all ${activeTab === 'footer' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
           >
-            <Layout size={18} /> Footer
+            <Layout size={16} /> Footer
+          </button>
+          <button 
+            onClick={() => setActiveTab('data')}
+            className={`flex-1 py-2.5 px-4 flex items-center justify-center gap-2 rounded-lg font-semibold text-xs whitespace-nowrap transition-all ${activeTab === 'data' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            <Database size={16} /> Data Sync
           </button>
         </div>
 
@@ -256,6 +283,37 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   />
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- Data Sync Tab --- */}
+        {activeTab === 'data' && (
+          <div className="animate-in fade-in duration-500">
+            <div className="max-w-3xl bg-gray-900 text-gray-300 p-8 rounded-3xl overflow-hidden">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2"><Database size={20} /> Data Sync (Permanent Save)</h2>
+                  <p className="text-xs text-gray-400 mt-1">이 코드를 복사하여 AI에게 주면 모든 기기에서 볼 수 있도록 영구 반영해 드립니다.</p>
+                </div>
+                <button 
+                  onClick={handleCopyCode}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${copied ? 'bg-green-500 text-white' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                >
+                  {copied ? <><Check size={14} /> Copied!</> : <><Copy size={14} /> Copy Code</>}
+                </button>
+              </div>
+              <pre className="text-[10px] font-mono leading-relaxed overflow-x-auto bg-black/30 p-6 rounded-xl border border-white/5">
+                {generateConstantsCode()}
+              </pre>
+            </div>
+            <div className="mt-8 p-6 border-l-4 border-blue-500 bg-blue-50 max-w-3xl rounded-r-2xl">
+              <h4 className="font-bold text-blue-900 mb-2">왜 이 과정이 필요한가요?</h4>
+              <p className="text-sm text-blue-800 leading-relaxed">
+                현재 수정한 내용은 본인의 브라우저에만 임시 저장된 상태입니다. 
+                위의 코드를 복사해 저(AI)에게 <strong>"이 데이터로 constants.ts 파일을 업데이트해줘"</strong>라고 말씀하시면, 
+                제가 실제 소스 코드를 변경하여 전 세계 어디서든 수정한 내용을 볼 수 있게 만들어 드립니다.
+              </p>
             </div>
           </div>
         )}
