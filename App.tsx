@@ -23,7 +23,8 @@ import {
   Heart,
   Truck,
   Search,
-  CheckCircle
+  CheckCircle,
+  ShoppingCart
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -73,12 +74,6 @@ const App: React.FC = () => {
       {label}
     </button>
   );
-
-  const socialIcons: Record<string, React.ReactNode> = {
-    instagram: <Instagram size={18} />,
-    facebook: <Facebook size={18} />,
-    twitter: <Twitter size={18} />
-  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col selection:bg-blue-100">
@@ -274,17 +269,15 @@ const App: React.FC = () => {
               {config.footerAbout}
             </p>
             <div className="flex gap-4">
-              {Object.entries(config.socialLinks).map(([platform, url]) => (
-                url && (
-                  <button 
-                    key={platform}
-                    onClick={() => window.open(url as string, '_blank')}
-                    className="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5"
-                  >
-                    {socialIcons[platform]}
-                  </button>
-                )
-              ))}
+              {config.amazonUrl && (
+                <button 
+                  onClick={() => window.open(config.amazonUrl, '_blank')}
+                  className="p-3 bg-white/5 hover:bg-white/10 rounded-full transition-all border border-white/5 flex items-center justify-center gap-2 group"
+                >
+                  <ShoppingCart size={18} className="group-hover:scale-110 transition-transform" />
+                  <span className="text-[10px] font-black uppercase tracking-widest mr-1">Shop Amazon</span>
+                </button>
+              )}
             </div>
           </div>
           <div>

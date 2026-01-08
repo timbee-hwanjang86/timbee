@@ -15,7 +15,8 @@ import {
   Tag,
   Eye,
   Layout,
-  Globe
+  Globe,
+  ShoppingCart
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -127,7 +128,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <div className="min-w-0">
                         <h3 className="font-bold text-gray-900 truncate pr-2">{product.name}</h3>
                         <div className="flex gap-1 mt-1">
-                          <span className={`inline-block px-2 py-0.5 text-[9px] font-bold uppercase rounded-md ${product.brand === 'NEOFECT' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                          <span className={`inline-block px-2 py-0.5 text-[9px] font-bold uppercase rounded-md ${product.brand === 'NEOFECT' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
                             {product.brand}
                           </span>
                           <span className="inline-block px-2 py-0.5 bg-gray-100 text-[9px] font-bold uppercase text-gray-500 rounded-md">
@@ -230,24 +231,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
-                  <Globe size={16} /> Social Media Links
+                  <ShoppingCart size={16} /> Global Amazon Link
                 </label>
-                <div className="space-y-4">
-                  {['instagram', 'facebook', 'twitter'].map((platform) => (
-                    <div key={platform} className="flex flex-col gap-1">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{platform} URL</span>
-                      <input 
-                        type="text" 
-                        value={config.socialLinks[platform as keyof typeof config.socialLinks] || ''} 
-                        onChange={(e) => onUpdateConfig({
-                          ...config, 
-                          socialLinks: { ...config.socialLinks, [platform]: e.target.value }
-                        })}
-                        placeholder={`https://${platform}.com/yourpage`}
-                        className="w-full border-gray-200 border rounded-xl px-4 py-3 outline-none transition-all"
-                      />
-                    </div>
-                  ))}
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Main Amazon Storefront URL</span>
+                  <input 
+                    type="text" 
+                    value={config.amazonUrl} 
+                    onChange={(e) => onUpdateConfig({
+                      ...config, 
+                      amazonUrl: e.target.value
+                    })}
+                    placeholder={`https://amazon.com/your-store`}
+                    className="w-full border-gray-200 border rounded-xl px-4 py-3 outline-none transition-all"
+                  />
                 </div>
               </div>
             </div>

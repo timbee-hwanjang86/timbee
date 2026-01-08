@@ -19,11 +19,7 @@ export interface SiteConfig {
   seoDescription: string;
   footerAbout: string;
   footerCopyright: string;
-  socialLinks: {
-    instagram?: string;
-    facebook?: string;
-    twitter?: string;
-  };
+  amazonUrl: string;
 }
 
 export type View = 'home' | 'products' | 'admin' | 'about';

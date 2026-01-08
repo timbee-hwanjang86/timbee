@@ -51,9 +51,5 @@ export const INITIAL_CONFIG: SiteConfig = {
   seoDescription: 'Premium Medical Supplies & Equipment. Specialized in NEOFECT and UPWELLY professional supports.',
   footerAbout: 'timbee is dedicated to providing high-quality medical grade braces and supports through our curated selection of NEOFECT and UPWELLY products.',
   footerCopyright: 'All rights reserved.',
-  socialLinks: {
-    instagram: 'https://instagram.com/timbee',
-    facebook: 'https://facebook.com/timbee',
-    twitter: 'https://twitter.com/timbee'
-  }
+  amazonUrl: 'https://amazon.com'
 };
