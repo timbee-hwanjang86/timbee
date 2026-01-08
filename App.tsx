@@ -288,7 +288,6 @@ const App: React.FC = () => {
                   ))}
                 </div>
               </div>
-              <p className="text-gray-500 max-w-sm font-medium">Filtered results for high-performance orthopedic and rehabilitation medical devices.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
