@@ -1,0 +1,7 @@
+{
+  "name": "timbee - Medical Braces & Supports",
+  "description": "A high-end, professional showcase website for medical-grade braces, splints, and supports with an integrated admin dashboard and Amazon affiliate redirection.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
