@@ -17,7 +17,8 @@ import {
   Layout,
   Globe,
   ShoppingCart,
-  MapPin
+  MapPin,
+  LogOut
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -26,6 +27,7 @@ interface AdminDashboardProps {
   onUpdateProducts: (products: Product[]) => void;
   onUpdateConfig: (config: SiteConfig) => void;
   onClose: () => void;
+  onLogout: () => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -33,7 +35,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   config,
   onUpdateProducts,
   onUpdateConfig,
-  onClose
+  onClose,
+  onLogout
 }) => {
   const [activeTab, setActiveTab] = useState<'products' | 'general' | 'footer'>('products');
 
@@ -79,9 +82,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Admin Dashboard</h1>
             <p className="text-gray-500 mt-1">Manage your NEOFECT & UPWELLY product lines and site configurations.</p>
           </div>
-          <Button variant="outline" onClick={onClose} className="flex items-center gap-2 border-gray-200 hover:border-gray-900">
-            <X size={18} /> Exit Dashboard
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={onLogout} className="flex items-center gap-2 border-red-100 text-red-600 hover:bg-red-50 hover:border-red-200">
+              <LogOut size={18} /> Log Out
+            </Button>
+            <Button variant="outline" onClick={onClose} className="flex items-center gap-2 border-gray-200 hover:border-gray-900">
+              <X size={18} /> Close
+            </Button>
+          </div>
         </header>
 
         <div className="flex gap-2 mb-10 bg-gray-100 p-1.5 rounded-xl max-w-lg">
@@ -218,19 +226,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className="w-full border-gray-200 border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="Short description for the footer..."
                   />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs text-gray-400 font-medium">Physical Address</span>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-3.5 text-gray-400" size={16} />
-                    <input 
-                      type="text" 
-                      value={config.address || ''} 
-                      onChange={(e) => onUpdateConfig({...config, address: e.target.value})}
-                      className="w-full border-gray-200 border rounded-xl pl-10 pr-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                      placeholder="e.g., Gangnam-gu, Seoul, Korea"
-                    />
-                  </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-xs text-gray-400 font-medium">Copyright Text</span>

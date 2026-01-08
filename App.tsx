@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { INITIAL_PRODUCTS, INITIAL_CONFIG } from './constants';
+import { INITIAL_PRODUCTS, INITIAL_CONFIG, ADMIN_SECRET_CODE } from './constants';
 import { Product, SiteConfig, View, Brand } from './types';
 import { Button } from './components/Button';
 import { AdminDashboard } from './components/AdminDashboard';
@@ -25,7 +25,8 @@ import {
   Search,
   CheckCircle,
   ShoppingCart,
-  MapPin
+  MapPin,
+  Lock
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -35,15 +36,19 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [adminClickCount, setAdminClickCount] = useState(0);
   const [selectedBrandFilter, setSelectedBrandFilter] = useState<Brand | 'ALL'>('ALL');
 
   // Load from LocalStorage
   useEffect(() => {
     const savedProducts = localStorage.getItem('timbee_products');
     const savedConfig = localStorage.getItem('timbee_config');
+    const savedAuth = sessionStorage.getItem('timbee_admin_auth');
 
     if (savedProducts) setProducts(JSON.parse(savedProducts));
     if (savedConfig) setConfig(JSON.parse(savedConfig));
+    if (savedAuth === 'true') setIsAdminAuthenticated(true);
   }, []);
 
   // Save to LocalStorage
@@ -76,6 +81,34 @@ const App: React.FC = () => {
     </button>
   );
 
+  const handleAdminEasterEgg = () => {
+    const newCount = adminClickCount + 1;
+    setAdminClickCount(newCount);
+    
+    if (newCount >= 5) {
+      setAdminClickCount(0);
+      const pass = prompt('Enter Admin Access Code:');
+      if (pass === ADMIN_SECRET_CODE) {
+        setIsAdminAuthenticated(true);
+        setIsAdminOpen(true);
+        sessionStorage.setItem('timbee_admin_auth', 'true');
+      } else if (pass !== null) {
+        alert('Invalid Access Code');
+      }
+    }
+
+    // Reset count after 3 seconds of inactivity
+    setTimeout(() => {
+      setAdminClickCount(0);
+    }, 3000);
+  };
+
+  const handleLogout = () => {
+    setIsAdminAuthenticated(false);
+    setIsAdminOpen(false);
+    sessionStorage.removeItem('timbee_admin_auth');
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col selection:bg-blue-100">
       {/* Navigation */}
@@ -95,6 +128,14 @@ const App: React.FC = () => {
             >
               Shop All
             </Button>
+            {isAdminAuthenticated && (
+              <button 
+                onClick={() => setIsAdminOpen(true)}
+                className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-all"
+              >
+                <Lock size={18} />
+              </button>
+            )}
           </div>
 
           <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -108,6 +149,9 @@ const App: React.FC = () => {
             <NavLink view="home" label="Overview" />
             <NavLink view="about" label="About us" />
             <Button onClick={() => setCurrentView('products')} style={{ backgroundColor: config.primaryColor }} className="rounded-full">Shop Now</Button>
+            {isAdminAuthenticated && (
+              <button onClick={() => setIsAdminOpen(true)} className="text-blue-600 font-bold uppercase text-xs tracking-widest text-left">Admin Panel</button>
+            )}
           </div>
         )}
       </nav>
@@ -216,7 +260,6 @@ const App: React.FC = () => {
                 ].map((item, i) => (
                   <div key={i} className="bg-gray-50 p-12 rounded-[2.5rem] hover:bg-white hover:shadow-xl transition-all duration-500 group">
                     <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-blue-600 mb-8 shadow-sm group-hover:scale-110 transition-transform" style={{ color: config.primaryColor }}>
-                      {/* Fixed: cast ReactElement to <any> to allow the 'size' prop to be recognized */}
                       {React.cloneElement(item.icon as React.ReactElement<any>, { size: 32 })}
                     </div>
                     <h3 className="text-2xl font-black text-gray-900 mb-4 uppercase tracking-tight">{item.title}</h3>
@@ -266,7 +309,12 @@ const App: React.FC = () => {
       <footer className="bg-[#0a0a0a] text-white pt-28 pb-16">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
           <div className="md:col-span-1">
-            <h3 className="text-3xl font-black mb-8 tracking-tighter lowercase">{config.brandName}<span style={{ color: config.primaryColor }}>.</span></h3>
+            <h3 
+              onClick={handleAdminEasterEgg}
+              className="text-3xl font-black mb-8 tracking-tighter lowercase cursor-default select-none transition-colors active:text-white/50"
+            >
+              {config.brandName}<span style={{ color: config.primaryColor }}>.</span>
+            </h3>
             <p className="text-gray-400 mb-8 leading-relaxed font-medium">
               {config.footerAbout}
             </p>
@@ -279,12 +327,6 @@ const App: React.FC = () => {
                   <ShoppingCart size={18} className="group-hover:scale-110 transition-transform text-orange-400" />
                   <span className="text-[10px] font-black uppercase tracking-widest mr-1">Shop Amazon</span>
                 </button>
-              )}
-              {config.address && (
-                <div className="flex items-center gap-2 text-gray-500 text-[10px] font-bold uppercase tracking-widest mt-2">
-                  <MapPin size={14} className="text-gray-600" />
-                  <span>{config.address}</span>
-                </div>
               )}
             </div>
           </div>
@@ -301,7 +343,6 @@ const App: React.FC = () => {
               <li><a href="#" className="hover:text-white">Shipping</a></li>
               <li><a href="#" className="hover:text-white">Amazon Link Policy</a></li>
               <li><a href="#" className="hover:text-white">Terms of Service</a></li>
-              <li><button onClick={() => setIsAdminOpen(true)} className="hover:text-white text-[10px] opacity-20">Admin Panel</button></li>
             </ul>
           </div>
           <div>
@@ -319,13 +360,14 @@ const App: React.FC = () => {
       </footer>
 
       {/* Admin Dashboard */}
-      {isAdminOpen && (
+      {isAdminOpen && isAdminAuthenticated && (
         <AdminDashboard 
           products={products}
           config={config}
           onUpdateProducts={updateProducts}
           onUpdateConfig={updateConfig}
           onClose={() => setIsAdminOpen(false)}
+          onLogout={handleLogout}
         />
       )}
     </div>
