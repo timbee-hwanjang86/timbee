@@ -354,7 +354,6 @@ const App: React.FC = () => {
         </div>
         <div className="max-w-7xl mx-auto px-6 border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center text-gray-600 text-[10px] font-black uppercase tracking-widest">
           <p>© {new Date().getFullYear()} {config.brandName}. {config.footerCopyright}</p>
-          <p className="flex items-center gap-2 mt-4 md:mt-0">Certified Amazon Affiliate <ExternalLink size={12} /></p>
         </div>
       </footer>
 
